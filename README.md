@@ -29,3 +29,17 @@ tldr‑studios/
 ├── 5. Title, Description & Cover.py
 ├── 6. Video Creation.py
 └── orchestrate.py ← (road‑map) one‑click pipeline runner
+
+## Getting Started
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Copy `.env.example` to `.env` and add your OpenAI key.
+3. Run a single step or the entire pipeline:
+   ```bash
+   python orchestrate.py step 1  # run script 1
+   python orchestrate.py all     # run all scripts
+   ```
+
