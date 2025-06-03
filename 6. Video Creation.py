@@ -38,16 +38,10 @@ from tqdm import tqdm
 from moviepy.editor import (
     ImageClip, AudioFileClip, concatenate_videoclips, CompositeVideoClip
 )
-import openai                                   # GPT‑guided Ken Burns (optional)
-
-# 🔑——— PASTE YOUR KEY ONCE HERE ———
-OPENAI_API_KEY = "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"
-OPENAI_API_KEY = OPENAI_API_KEY.strip()         # remove stray spaces/newlines
-openai.api_key = OPENAI_API_KEY or None         # None → random Ken Burns fallback
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY   # overwrite any stale env var
-# ————————————————————————————————
-
-# Paths (use GUI‑uploaded files if they exist)
+import openai
+from dotenv import load_dotenv
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")  # GPT-guided Ken Burns (optional)
 ASSETS_ZIP = globals().get("ASSETS_ZIP", "/content/video_assets.zip")
 AUDIO_WAV  = globals().get("AUDIO_WAV",  "/content/narration.wav")
 

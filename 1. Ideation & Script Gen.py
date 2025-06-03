@@ -16,9 +16,10 @@ Original file is located at
 # BLOCK 1 — API key & config
 # ───────────────────────────
 import os
+from dotenv import load_dotenv
 
-# 👉 Paste or set your key
-os.environ["OPENAI_API_KEY"] = "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"
+# Load API key from .env or environment
+load_dotenv()
 
 MODEL            = "gpt-4.1-nano"   # change if desired
 TEMPERATURE      = 0.8
@@ -36,7 +37,7 @@ from pathlib import Path
 from slugify import slugify
 import openai
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # ── Shared channel context ────────────────────
 TLDR_DESC = (

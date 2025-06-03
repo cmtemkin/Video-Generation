@@ -1,0 +1,15 @@
+openai
+python-slugify
+ipywidgets
+python-docx
+httpx
+stable-ts
+tqdm
+pandas
+slugify
+requests
+moviepy==1.0.3
+python-ffmpeg
+python-dotenv
+
+streamlit
