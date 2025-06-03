@@ -43,3 +43,8 @@ tldr‑studios/
    python orchestrate.py all     # run all scripts
    ```
 
+4. Launch the Streamlit wizard:
+   ```bash
+   streamlit run app.py
+   ```
+

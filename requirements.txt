@@ -11,3 +11,5 @@ requests
 moviepy==1.0.3
 python-ffmpeg
 python-dotenv
+
+streamlit
