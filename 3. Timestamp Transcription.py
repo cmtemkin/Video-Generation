@@ -12,7 +12,9 @@ Original file is located at
 
 # ─── Cell 2: Clear Proxy Environment Variables (Optional) ───
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Remove any stray proxy settings that can trigger the 'proxies' error
 os.environ.pop("HTTP_PROXY", None)
 os.environ.pop("HTTPS_PROXY", None)
@@ -24,8 +26,6 @@ import pandas as pd
 from tqdm import tqdm
 from openai import OpenAI
 
-# ← Set your OpenAI key here (or swap in getpass.getpass for privacy)
-os.environ["OPENAI_API_KEY"] = "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"
 
 # Initialize the HTTPX-backed client
 client = OpenAI()

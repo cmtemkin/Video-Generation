@@ -14,10 +14,9 @@ Original file is located at
 # ── Cell 2: Set Your OpenAI API Key ──
 
 import os
+from dotenv import load_dotenv
 
-# 1) Paste your OpenAI API Key here (keep it secret!)
-OPENAI_API_KEY = "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"
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+load_dotenv()
 
 # Verify that it’s set correctly:
 print("OpenAI Key set:", bool(os.getenv("OPENAI_API_KEY")))

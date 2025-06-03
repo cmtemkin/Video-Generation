@@ -11,15 +11,11 @@ Original file is located at
 !pip install openai ipywidgets requests --quiet
 
 import os
+from dotenv import load_dotenv
 import openai
+load_dotenv()
 import ipywidgets as widgets
 from IPython.display import display, Image, HTML
-
-# ── Cell 2: Hardcode Your OpenAI API Key ──
-# Replace the string below with your actual key.
-api_key = "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"
-os.environ["OPENAI_API_KEY"] = api_key
-openai.api_key = api_key
 
 # ── Cell 3: Upload/Paste Script → Proceed Button → Title Suggestions UI ──
 
