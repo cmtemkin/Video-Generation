@@ -1,4 +1,8 @@
 import sys
+ fl5ssl-codex/create-ui-orchestrator-for-python-scripts
+import os
+=======
+ main
 from pathlib import Path
 import pandas as pd
 from dotenv import load_dotenv
@@ -15,7 +19,13 @@ TRANS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def main(audio_file: str):
+ fl5ssl-codex/create-ui-orchestrator-for-python-scripts
+    """Transcribe ``audio_file`` using OpenAI Whisper."""
+    key = os.getenv("OPENAI_API_KEY")
+    client = openai.OpenAI(api_key=key)
+=======
     client = openai.OpenAI()
+ main
     resp = client.audio.transcriptions.create(
         model="whisper-1",
         file=open(audio_file, "rb"),

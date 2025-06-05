@@ -42,7 +42,10 @@ tldr‑studios/
    pip install -r requirements.txt
    ```
    The pipeline also relies on `ffmpeg` being available on your system.
+ fl5ssl-codex/create-ui-orchestrator-for-python-scripts
+=======
  8yyydb-codex/create-ui-orchestrator-for-python-scripts
+ main
    When deploying to Streamlit Cloud, include a `packages.txt` file with `ffmpeg`
    so the service installs it for you.
 3. **Set up credentials** by copying `.env.example` to `.env` and adding your
@@ -55,6 +58,8 @@ tldr‑studios/
    python orchestrate.py all --n-images 5  # run everything
    ```
 5. **Launch the graphical orchestrator** (optional):
+ fl5ssl-codex/create-ui-orchestrator-for-python-scripts
+=======
 =======
 3. **Set up credentials** by copying `.env.example` to `.env` and adding your
    OpenAI API key.
@@ -66,6 +71,7 @@ tldr‑studios/
    ```
 5. **Launch the graphical orchestrator**:
  main
+ main
    ```bash
    python gui_orchestrator.py
    ```
@@ -73,6 +79,21 @@ tldr‑studios/
    correspond to the prompts normally asked on the command line.
 
 6. **Run the Streamlit wizard**:
+ fl5ssl-codex/create-ui-orchestrator-for-python-scripts
+   ```bash
+   streamlit run app.py
+   ```
+   If your API key isn't provided via environment variables or `st.secrets`,
+   you'll be prompted in the sidebar to paste it when the app launches.
+
+### Deploying on Streamlit Cloud
+
+1. **Do not commit your `.env` file**. Keep API keys in environment variables or
+   Streamlit [secrets](https://docs.streamlit.io/streamlit-community-cloud/deploy-your-app/secrets-management).
+2. Set your `OPENAI_API_KEY` secret in Streamlit Cloud or paste it at runtime
+   when prompted by the app.
+3. If deployment fails with an installer error, open the build logs to see which package caused the failure. Ensure your `requirements.txt` and `packages.txt` match this repository and try redeploying.
+=======
  8yyydb-codex/create-ui-orchestrator-for-python-scripts
    ```bash
    streamlit run app.py
@@ -113,3 +134,4 @@ tldr‑studios/
    correspond to the prompts normally asked on the command line.
  main
 > main
+ main

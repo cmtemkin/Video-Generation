@@ -38,6 +38,18 @@ if openai:
     if key:
         openai.api_key = key
 
+
+def get_key():
+    key = st.session_state.get("OPENAI_API_KEY")
+    if not key:
+        key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
+    return key
+
+if openai:
+    key = get_key()
+    if key:
+        openai.api_key = key
+
 DATA_DIR = Path("data")
 INPUT_DIR = DATA_DIR / "inputs"
 AUDIO_DIR = DATA_DIR / "audio"
@@ -153,7 +165,7 @@ elif step.startswith("3"):
         if st.button("Transcribe") and audio_file is not None:
             path = AUDIO_DIR / "uploaded_audio"
             path.write_bytes(audio_file.read())
-            client = openai.OpenAI()
+            client = openai.OpenAI(api_key=get_key())
             resp = client.audio.transcriptions.create(
                 model="whisper-1",
                 file=open(path, "rb"),
