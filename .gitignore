@@ -1,0 +1,10 @@
+# Environment files
+.env
+
+# Python artifacts
+__pycache__/
+*.pyc
+
+# Data outputs
+/data/
+
