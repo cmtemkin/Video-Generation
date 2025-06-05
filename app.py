@@ -10,13 +10,19 @@ from slugify import slugify
 from dotenv import load_dotenv
 
 load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 try:
     import openai
-    openai.api_key = OPENAI_API_KEY
 except Exception:
     openai = None
+else:
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    if "OPENAI_API_KEY" in st.secrets:
+        OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+    if "OPENAI_API_KEY" in st.session_state:
+        OPENAI_API_KEY = st.session_state["OPENAI_API_KEY"]
+    if OPENAI_API_KEY:
+        openai.api_key = OPENAI_API_KEY
 
 DATA_DIR = Path("data")
 INPUT_DIR = DATA_DIR / "inputs"
@@ -29,6 +35,13 @@ for d in [INPUT_DIR, AUDIO_DIR, TRANSCRIPT_DIR, IMAGE_DIR, FINAL_DIR]:
     d.mkdir(parents=True, exist_ok=True)
 
 st.title("TL;DR Studios Wizard")
+
+if openai and not openai.api_key:
+    st.sidebar.warning("Enter your OpenAI API key to enable API features.")
+    key_input = st.sidebar.text_input("OpenAI API Key", type="password")
+    if key_input:
+        openai.api_key = key_input
+        st.session_state["OPENAI_API_KEY"] = key_input
 
 step = st.sidebar.radio(
     "Step",

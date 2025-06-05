@@ -32,13 +32,40 @@ tldr‑studios/
 
 ## Getting Started
 
-1. Install dependencies:
+1. **Create a Python environment** (Python 3.8+):
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
+2. **Install required packages:**
    ```bash
    pip install -r requirements.txt
    ```
-2. Copy `.env.example` to `.env` and add your OpenAI key.
-3. Run a single step or the entire pipeline:
+   The pipeline also relies on `ffmpeg` being available on your system.
+3. **Set up credentials** by copying `.env.example` to `.env` and adding your
+   OpenAI API key.
+4. **Try the command‑line orchestrator** to run a step or the whole pipeline:
    ```bash
-   python orchestrate.py step 1  # run script 1
-   python orchestrate.py all     # run all scripts
+   python orchestrate.py step 1  # run script 1 only
+   python orchestrate.py all     # run all scripts sequentially
    ```
+5. **Launch the graphical orchestrator**:
+   ```bash
+   python gui_orchestrator.py
+   ```
+   Select a step from the drop‑down or click **Run All**. Step 1 fields
+   correspond to the prompts normally asked on the command line.
+
+6. **Run the Streamlit wizard**:
+   ```bash
+   streamlit run app.py
+   ```
+   If your API key isn't provided via environment variables or `st.secrets`,
+   you'll be prompted in the sidebar to paste it when the app launches.
+
+### Deploying on Streamlit Cloud
+
+1. **Do not commit your `.env` file**. Keep API keys in environment variables or
+   Streamlit [secrets](https://docs.streamlit.io/streamlit-community-cloud/deploy-your-app/secrets-management).
+2. Set your `OPENAI_API_KEY` secret in Streamlit Cloud or paste it at runtime
+   when prompted by the app.
