@@ -1,12 +1,10 @@
-streamlit==1.45.1
-openai==1.84.0
-pandas==2.3.0
+streamlit
+openai
+pandas
 moviepy==1.0.3
-requests==2.32.3
-python-slugify==8.0.4
-python-dotenv==1.1.0
-typer==0.12.3
- fl5ssl-codex/create-ui-orchestrator-for-python-scripts
+requests
+python-slugify
+python-dotenv
 click==8.1.7
 =======
  main
