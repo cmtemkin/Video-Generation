@@ -45,6 +45,7 @@ tldr‑studios/
 3. **Set up credentials** by copying `.env.example` to `.env` and adding your
    OpenAI API key.
 4. **Try the command‑line orchestrator** to run a step or the whole pipeline:
+ fv3ujw-codex/create-ui-orchestrator-for-python-scripts
    ```bash
    python orchestrate.py step 1  # run script 1 only
    python orchestrate.py all     # run all scripts sequentially
@@ -55,3 +56,29 @@ tldr‑studios/
    ```
    Select a step from the drop‑down or click **Run All**. Step 1 fields
    correspond to the prompts normally asked on the command line.
+
+6. **Run the Streamlit wizard**:
+   ```bash
+   streamlit run app.py
+   ```
+   If your API key isn't provided via environment variables or `st.secrets`,
+   you'll be prompted in the sidebar to paste it when the app launches.
+
+### Deploying on Streamlit Cloud
+
+1. **Do not commit your `.env` file**. Keep API keys in environment variables or
+   Streamlit [secrets](https://docs.streamlit.io/streamlit-community-cloud/deploy-your-app/secrets-management).
+2. Set your `OPENAI_API_KEY` secret in Streamlit Cloud or paste it at runtime
+   when prompted by the app.
+=======
+   ```bash
+   python orchestrate.py step 1  # run script 1 only
+   python orchestrate.py all     # run all scripts sequentially
+   ```
+5. **Launch the graphical orchestrator**:
+   ```bash
+   python gui_orchestrator.py
+   ```
+   Select a step from the drop‑down or click **Run All**. Step 1 fields
+   correspond to the prompts normally asked on the command line.
+ main
