@@ -42,3 +42,7 @@ tldr‑studios/
    python orchestrate.py step 1  # run script 1
    python orchestrate.py all     # run all scripts
    ```
+4. Launch the graphical orchestrator:
+   ```bash
+   python gui_orchestrator.py
+   ```
