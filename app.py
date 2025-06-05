@@ -17,6 +17,14 @@ try:
     import openai
 except Exception:
     openai = None
+else:
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    if "OPENAI_API_KEY" in st.secrets:
+        OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+    if "OPENAI_API_KEY" in st.session_state:
+        OPENAI_API_KEY = st.session_state["OPENAI_API_KEY"]
+    if OPENAI_API_KEY:
+        openai.api_key = OPENAI_API_KEY
 
 
 def get_key():
