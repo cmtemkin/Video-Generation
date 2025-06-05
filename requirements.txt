@@ -1,18 +1,7 @@
-openai
-python-slugify
-ipywidgets
-python-docx
-httpx
-stable-ts
-tqdm
-pandas
-slugify
-requests
-moviepy==1.0.3
-python-ffmpeg
-python-dotenv
-od1zul-codex/analyze-scripts-and-create-ui-wizard
-
 streamlit
-=======
- main
+openai
+pandas
+moviepy==1.0.3
+requests
+python-slugify
+python-dotenv

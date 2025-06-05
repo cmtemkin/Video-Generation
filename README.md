@@ -42,6 +42,8 @@ tldr‑studios/
    pip install -r requirements.txt
    ```
    The pipeline also relies on `ffmpeg` being available on your system.
+   When deploying to Streamlit Cloud, include a `packages.txt` file with `ffmpeg`
+   so the service installs it for you.
 3. **Set up credentials** by copying `.env.example` to `.env` and adding your
    OpenAI API key.
 4. **Try the command‑line orchestrator** to run a step or the whole pipeline:

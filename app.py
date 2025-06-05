@@ -1,6 +1,8 @@
 import os
 import zipfile
 from pathlib import Path
+from uuid import uuid4
+import shutil
 
 import streamlit as st
 import pandas as pd
@@ -15,14 +17,18 @@ try:
     import openai
 except Exception:
     openai = None
-else:
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    if "OPENAI_API_KEY" in st.secrets:
-        OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-    if "OPENAI_API_KEY" in st.session_state:
-        OPENAI_API_KEY = st.session_state["OPENAI_API_KEY"]
-    if OPENAI_API_KEY:
-        openai.api_key = OPENAI_API_KEY
+
+
+def get_key():
+    key = st.session_state.get("OPENAI_API_KEY")
+    if not key:
+        key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
+    return key
+
+if openai:
+    key = get_key()
+    if key:
+        openai.api_key = key
 
 DATA_DIR = Path("data")
 INPUT_DIR = DATA_DIR / "inputs"
@@ -101,6 +107,7 @@ if step.startswith("1"):
                 path = INPUT_DIR / filename
                 path.write_text(script, encoding="utf-8")
                 st.success(f"Saved {path}")
+                st.session_state["script_path"] = str(path)
 
 # ----------------------------- Step 2 ---------------------------------
 elif step.startswith("2"):
@@ -120,6 +127,7 @@ elif step.startswith("2"):
                         speed=0.95,
                     )
                     audio_path = AUDIO_DIR / "tts_output.mp3"
+                    st.session_state["audio_path"] = str(audio_path)
                     response.stream_to_file(str(audio_path))
                     st.audio(str(audio_path))
                     with open(audio_path, "rb") as f:
@@ -146,6 +154,7 @@ elif step.startswith("3"):
             )
             df = pd.DataFrame([{"word": w.word, "start": w.start, "end": w.end} for w in resp.words])
             csv_path = TRANSCRIPT_DIR / "sentence_timestamps.csv"
+            st.session_state["transcript_csv"] = str(csv_path)
             df.to_csv(csv_path, index=False)
             st.dataframe(df.head())
             with open(csv_path, "rb") as f:
@@ -177,6 +186,7 @@ elif step.startswith("4"):
                 img_paths.append(img_path)
                 st.image(str(img_path))
             zip_path = IMAGE_DIR / "images.zip"
+            st.session_state["images_zip"] = str(zip_path)
             with zipfile.ZipFile(zip_path, "w") as z:
                 for p in img_paths:
                     z.write(p, p.name)
@@ -231,21 +241,58 @@ elif step.startswith("6"):
     st.warning("This step requires moviepy and can be slow.")
     audio_file = st.file_uploader("Upload narration audio", type=["mp3", "wav"])
     images_zip = st.file_uploader("Upload storyboard ZIP", type=["zip"])
-    if st.button("Assemble Video") and audio_file and images_zip:
-        audio_path = AUDIO_DIR / "narration.mp3"
-        audio_path.write_bytes(audio_file.read())
-        tmp_dir = IMAGE_DIR / "temp"
-        tmp_dir.mkdir(parents=True, exist_ok=True)
-        with zipfile.ZipFile(images_zip) as z:
-            z.extractall(tmp_dir)
-        clips = []
-        for img_file in sorted(tmp_dir.glob("*.png")):
-            clip = mp.ImageClip(str(img_file)).set_duration(3)
-            clips.append(clip)
-        video = mp.concatenate_videoclips(clips, method="compose")
-        audio = mp.AudioFileClip(str(audio_path))
-        video = video.set_audio(audio)
-        out_path = FINAL_DIR / "final_video.mp4"
-        video.write_videofile(str(out_path), fps=30)
-        with open(out_path, "rb") as f:
-            st.download_button("Download Video", f, file_name="final_video.mp4")
+    if st.button("Assemble Video"):
+        try:
+            if audio_file:
+                audio_path = AUDIO_DIR / "narration.mp3"
+                audio_path.write_bytes(audio_file.read())
+                st.session_state["audio_path"] = str(audio_path)
+            elif st.session_state.get("audio_path"):
+                st.info("Using audio from Step 2.")
+                audio_path = Path(st.session_state["audio_path"])
+            else:
+                st.error("Please upload or generate an audio file.")
+                st.stop()
+
+            if images_zip:
+                zip_path = IMAGE_DIR / "uploaded_images.zip"
+                zip_path.write_bytes(images_zip.read())
+                st.session_state["images_zip"] = str(zip_path)
+            elif st.session_state.get("images_zip"):
+                st.info("Using images from Step 4.")
+                zip_path = Path(st.session_state["images_zip"])
+            else:
+                st.error("Please upload or generate storyboard images.")
+                st.stop()
+
+            tmp_dir = IMAGE_DIR / f"temp_{uuid4().hex[:8]}"
+            tmp_dir.mkdir(parents=True, exist_ok=True)
+            with zipfile.ZipFile(zip_path) as z:
+                z.extractall(tmp_dir)
+
+            clips = []
+            for img_file in sorted(tmp_dir.glob("*.png")):
+                clip = mp.ImageClip(str(img_file)).resize(height=1080)
+                if clip.w > 1920:
+                    clip = clip.crop(x_center=clip.w / 2, width=1920)
+                else:
+                    clip = clip.resize(width=1920)
+                clips.append(clip.set_duration(3))
+
+            video = mp.concatenate_videoclips(clips, method="compose")
+            audio = mp.AudioFileClip(str(audio_path))
+            final_duration = min(video.duration, audio.duration)
+            video = video.set_audio(audio.subclip(0, final_duration)).set_duration(final_duration)
+
+            FINAL_DIR.mkdir(parents=True, exist_ok=True)
+            out_path = FINAL_DIR / "final_video.mp4"
+            video.write_videofile(str(out_path), fps=30, codec="libx264", audio_codec="aac")
+            st.session_state["video_path"] = str(out_path)
+
+            with open(out_path, "rb") as f:
+                st.download_button("Download Video", f, file_name="final_video.mp4")
+        except Exception as e:
+            st.error(f"Failed to assemble video: {e}")
+        finally:
+            if "tmp_dir" in locals() and tmp_dir.exists():
+                shutil.rmtree(tmp_dir)
